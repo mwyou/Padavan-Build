@@ -210,10 +210,13 @@ jobs:
             sed -i "s/CONFIG_FIRMWARE_INCLUDE_${m}=y/CONFIG_FIRMWARE_INCLUDE_${m}=n/" "$CONFIGFILE"
           done
 
-      - name: Fix LZMA 404 Error
+      - name: Bypass LZMA 404 Error (Manual Download)
         run: |
-          echo "Fixing LZMA download version (2409 -> 2408)..."
-          find trunk/tools/lzma -type f -name "Makefile" -exec sed -i 's/2409/2408/g' {} + || true
+          echo "从 SourceForge 永久归档库手动下载 LZMA SDK，绕过 7-Zip 官网 404 报错..."
+          mkdir -p trunk/download
+          curl -L -o trunk/download/lzma2409.7z "https://sourceforge.net/projects/sevenzip/files/LZMA%20SDK/lzma2409.7z/download"
+          # 如果你的仓库配置之前被修改成了 2408，把它还原回 2409
+          find trunk/tools/lzma -type f -name "Makefile" -exec sed -i 's/2408/2409/g' {} + || true
 
       - name: Build Firmware
         run: |
