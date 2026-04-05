@@ -210,6 +210,11 @@ jobs:
             sed -i "s/CONFIG_FIRMWARE_INCLUDE_${m}=y/CONFIG_FIRMWARE_INCLUDE_${m}=n/" "$CONFIGFILE"
           done
 
+      - name: Fix LZMA 404 Error
+        run: |
+          echo "Fixing LZMA download version (2409 -> 2408)..."
+          find trunk/tools/lzma -type f -name "Makefile" -exec sed -i 's/2409/2408/g' {} + || true
+
       - name: Build Firmware
         run: |
           make ${{ inputs.target }} TOOLCHAIN=${{ inputs.toolchain }}
